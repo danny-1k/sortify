@@ -114,7 +114,7 @@ class DataCollector:
 
         print("Saved")
 
-        pool = ThreadPoolExecutor(max_workers=16)
+        pool = ThreadPoolExecutor(max_workers=4)
 
 
         def download_audio(data):
