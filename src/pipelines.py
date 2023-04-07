@@ -37,13 +37,25 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import torch
 
+    from utils import split_waveform
+
     waveform, sr = librosa.load("../data/audio/57225qPFGFLt8MTI10FohE.mp3")
+
+    waveform = torch.from_numpy(waveform).cuda()
+
+    slices = split_waveform(waveform, sr=sr, secs_per_slice=3)
+
+    print(f"Num of slices {len(slices)}")
+
     pipeline = AudioPipeline().cuda()
+    
+    for i in range(len(slices)):
+        waveform = slices[i].cuda()
 
-    spec = pipeline(waveform, sr,).numpy()
+        spec = pipeline(waveform, sr).cpu().numpy()
 
-    plt.imshow(spec)
+        print(spec.shape)
 
-    plt.savefig("spec.png")
+        plt.imshow(spec)
 
-    # print(spec.max())
+        plt.savefig(f"spec_{i+1}.png")
