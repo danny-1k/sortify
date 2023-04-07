@@ -50,7 +50,7 @@ class DataCollector:
             playlists = []
 
 
-            playlist = self.client.category_playlists(category, limit=limit)["playlists"]
+            playlist = self.client.category_playlists(category, limit=limit, country="US")["playlists"]
             total_number_of_playlists = playlist["total"]
             playlist_items = playlist["items"]
 
@@ -61,7 +61,7 @@ class DataCollector:
                 if round > self.config["MAX_PLAYLISTS_SEARCH"]:
                     break
 
-                playlist = self.client.category_playlists(category, limit=limit, offset=round//limit)["playlists"]
+                playlist = self.client.category_playlists(category, limit=limit, offset=round//limit, country="US")["playlists"]
                 playlist_items = playlist["items"]
 
                 playlists.extend(playlist_items)
@@ -151,7 +151,7 @@ class DataCollector:
 
 if __name__ == "__main__":
     collector = DataCollector()
-    # collector.collect_data()
+    collector.collect_data()
 
     print("started downloading audio")
     
