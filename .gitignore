@@ -3,3 +3,5 @@ auth.yml
 .cache
 data/audio
 *.csv
+logs/*
+*.out
