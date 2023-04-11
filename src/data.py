@@ -34,12 +34,20 @@ class AudioData(Dataset):
 
         slices = split_waveform(waveform, sr=sr, secs_per_slice=3)
 
+        y = []
+
         for slice in slices:
-            x = self.pipeline(slice, sr)
+            x = self.pipeline(slice, sr).to(self.device)
 
             x = (x-self.min)/(self.max-self.min)
 
-            yield x
+            y.append(x)
+
+        if len(y) < 9:
+            y += [y[-1]]*(9-len(y))
+
+        return y
+
 
     def __len__(self):
         return len(self.df)
