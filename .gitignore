@@ -5,3 +5,4 @@ data/audio
 *.csv
 logs/*
 *.out
+runs
