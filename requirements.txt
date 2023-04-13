@@ -1,1 +1,4 @@
 spotipy
+librosa
+torch
+torchaudio
