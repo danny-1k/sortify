@@ -44,6 +44,8 @@ class AudioData(Dataset):
             y.append(x)
 
         if len(y) < 9:
+            if len(y) == 0:
+                y = [torch.zeros((128, 130)).to("cuda")]
             y += [y[-1]]*(9-len(y))
 
         return y
