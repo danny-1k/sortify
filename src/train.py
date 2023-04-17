@@ -77,6 +77,10 @@ def run(num_epochs, lr, batch_size, num_workers):
 
             writer.add_scalar("loss/train", loss.item(), global_train_idx)
 
+            writer.add_image("images/train/original", x[-1].cpu(), global_train_idx)
+            writer.add_image("images/train/reconstructed", p[-1].cpu(), global_train_idx)
+
+
             for name, param in net.named_parameters():
                 writer.add_histogram(name, param, global_train_idx)
                 writer.add_histogram(f"{name}.grad", param.grad, global_train_idx)
@@ -99,6 +103,9 @@ def run(num_epochs, lr, batch_size, num_workers):
                 current_loss = (.4*current_loss)+(.6*loss.item())
 
                 writer.add_scalar("loss/test", loss.item(), global_test_idx)
+
+                writer.add_image("images/test/original", x[-1].cpu(), global_test_idx)
+                writer.add_image("images/test/reconstructed", p[-1].cpu(), global_test_idx)
 
                 for name, param in net.named_parameters():
                     writer.add_histogram(name, param, global_test_idx)
