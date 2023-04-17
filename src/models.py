@@ -1,56 +1,66 @@
-from torch import nn
-
+import torch.nn as nn
 
 class AutoEncoder(nn.Module):
-    def __init__(self):
-        super().__init__()
+	def __init__(self):
+		super().__init__()
+		self.encoder_head = nn.Conv2d(in_channels=1, out_channels=1, kernel_size=(2,3), stride=2, padding=1)
+		
+		self.decoder_head = nn.Sequential(
+			nn.ConvTranspose2d(in_channels=1, out_channels=1, kernel_size=(4, 6), stride=2, padding=1),
+			nn.ELU(),
+			nn.Conv2d(in_channels=1, out_channels=1, kernel_size=3, padding=1),
+			nn.Sigmoid()
+		)
 
-        self.relu = nn.ReLU()
-        self.e_1 = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=(4, 6), stride=2, padding=1)
-        self.e_2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1)
-        self.e_3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=2, padding=1)
-        self.e_4 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=4, stride=1)
-        self.e_5 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=4, stride=1)
+		self.encoder_body = nn.Sequential(
+			nn.Conv2d(in_channels=1, out_channels=32, kernel_size=3, padding=1),
+			nn.ELU(),
+			nn.MaxPool2d(2,2),
 
-        self.d_1 = nn.ConvTranspose2d(in_channels=256, out_channels=256, kernel_size=4, stride=1)
-        self.d_2 = nn.ConvTranspose2d(in_channels=256, out_channels=128, kernel_size=4, stride=1)
-        self.d_3 = nn.ConvTranspose2d(in_channels=128, out_channels=64, kernel_size=4, stride=2, padding=1)
-        self.d_4 = nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=4, stride=2, padding=1)
-        self.d_5 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=32, out_channels=1, kernel_size=(4, 6), stride=2, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(in_channels=1, out_channels=1, kernel_size=3, stride=1, padding=1)
-        )
+			nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
+			nn.ELU(),
+			nn.MaxPool2d(2,2),
+			
+			nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+			nn.ELU(),
+			nn.MaxPool2d(2,2),
 
-        self.enc_2_latent = nn.Linear(256*10**2, 2048)
-        self.latent_2_dec = nn.Linear(2048, 256*10**2)
+			nn.Flatten()
+		)
+
+		self.decoder_body = nn.Sequential(
+			nn.ConvTranspose2d(in_channels=128, out_channels=64, kernel_size=2, stride=2),
+			nn.ELU(),
+
+			nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=2, stride=2),
+			nn.ELU(),
+
+			nn.ConvTranspose2d(in_channels=32, out_channels=1, kernel_size=2, stride=2),
+			nn.ELU(),
+		)
+
+		self.to_latent = nn.Linear(128*8*8, 512)
+		self.from_latent = nn.Linear(512, 128*8*8)
 
 
-    def encode(self, x):
-        x = self.relu(self.e_1(x))
-        x = self.relu(self.e_2(x))
-        x = self.relu(self.e_3(x))
-        x = self.relu(self.e_4(x))
-        x = self.relu(self.e_5(x))
-        x = x.view(x.shape[0], -1)
-        x = self.enc_2_latent(x)
+	def forward(self, x):
+		x = self.encode(x)
+		x = self.decode(x)
+		
+		return x		
+	
+	def encode(self, x):
+		x = self.encoder_head(x)
+		x = self.encoder_body(x)
+		x = self.to_latent(x)
 
-        return x
+		return x
+	
+	def decode(self, latent):
+		x = self.from_latent(latent)
+		x = x.view(x.shape[0], 128, 8, 8)
+		x = self.decoder_body(x)
+		x = self.decoder_head(x)
 
-    def decode(self, x):
-        x = self.latent_2_dec(x)
-        x = x.view(x.shape[0], 256, 10, 10)
-        x = self.relu(self.d_1(x))
-        x = self.relu(self.d_2(x))
-        x = self.relu(self.d_3(x))
-        x = self.relu(self.d_4(x))
-        x = self.d_5(x)
-
-        return x
-
-    def forward(self, x):
-        latent = self.encode(x)
-        recon = self.decode(latent)
-
-        return recon
+		return x
 
