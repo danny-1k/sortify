@@ -1,5 +1,5 @@
 import torch
-from src.inference import cosine_similarity
+from src.utils import cosine_similarity
 from src.pipelines import UrlToBytesToLatent
 
 
