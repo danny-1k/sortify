@@ -1,0 +1,10 @@
+-i https://download.pytorch.org/whl/cpu
+torch
+-i https://download.pytorch.org/whl/cpu
+torchaudio
+Flask
+numpy
+requests
+pydub
+spotipy
+gunicorn
