@@ -1,7 +1,5 @@
--i https://download.pytorch.org/whl/cpu
-torch
--i https://download.pytorch.org/whl/cpu
-torchaudio
+torch -i https://download.pytorch.org/whl/cpu
+torchaudio -i https://download.pytorch.org/whl/cpu
 Flask
 numpy
 requests
