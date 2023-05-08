@@ -10,7 +10,8 @@ def split_waveform(waveform: torch.Tensor, sr: int, secs_per_slice: int):
     slices = []
 
     for i in range(waveform.shape[-1]//sr//secs_per_slice):
-        slices.append(waveform[i*sr*secs_per_slice:][:sr*secs_per_slice])
+        slices.append(waveform[i*sr*secs_per_slice:][:sr*secs_per_slice].unsqueeze(0))
+        # let's make this a (1, N) Tensor... Will be useful when stacking for a single pass into the model
 
     return slices
 
