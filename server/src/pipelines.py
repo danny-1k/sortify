@@ -52,24 +52,13 @@ class UrlToBytesToLatent:
 
         slices = split_waveform(waveform, sr=sr, secs_per_slice=3)
 
-        number_of_slices = len(slices)
+        slices = torch.cat(slices, dim=0)  # (N, n)
 
-        latent = None
-
-        for slice in slices:
-            spectrogram = self.pipeline(slice, sr)
-            spectrogram = (spectrogram - self.spec_min) / \
-                (self.spec_max - self.spec_min)
-            spectrogram = spectrogram.unsqueeze(0).unsqueeze(0)
-
-            lat = self.net.encode(spectrogram)
-
-            if isinstance(latent, type(None)):
-                latent = lat
-
-            else:
-                latent += lat
-
-        latent = latent/number_of_slices  # take mean
+        spectrogram = self.pipeline(slices, sr).unsqueeze(1)  # (N,1,W,H)
+        spectrogram = (spectrogram - self.spec_min) / \
+            (self.spec_max - self.spec_min)  # standardize
+        
+        latents = self.net.encode(spectrogram) # (N, latent_dim)
+        latent = latents.mean(axis=0, keepdim=True)
 
         return latent
