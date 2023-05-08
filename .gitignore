@@ -6,3 +6,4 @@ data/audio
 logs/*
 *.out
 runs
+.vercel
