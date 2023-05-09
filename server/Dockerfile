@@ -4,6 +4,8 @@ ENV SERVER_PORT 3000
 
 WORKDIR /backend
 
+RUN apt-get -y update && apt-get -y upgrade && apt-get install -y ffmpeg
+
 COPY ./requirements.txt .
 
 RUN pip install --upgrade pip
