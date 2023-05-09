@@ -1,5 +1,7 @@
 FROM python:3.9.6
 
+ENV SERVER_PORT 3000
+
 WORKDIR /backend
 
 COPY ./requirements.txt .
@@ -12,4 +14,4 @@ COPY . .
 
 EXPOSE $SERVER_PORT
 
-CMD [ "gunicorn", "-b", "0.0.0.0:$SERVER_PORT", "app:app"]
+CMD gunicorn -b 0.0.0.0:$SERVER_PORT app:app
