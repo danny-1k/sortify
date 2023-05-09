@@ -94,7 +94,7 @@ class Algorithm:
             tracks_similarity = []
 
             for track in self.playlist.tracks:
-                similarity = cosine_similarity(track.latent, anchor.latent)
+                similarity = track.compare(anchor)
                 track.anchor_similarity = similarity
                 tracks_similarity.append(similarity)
 

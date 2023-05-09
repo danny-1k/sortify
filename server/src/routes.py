@@ -53,7 +53,6 @@ def predict():
     playlist_id = json["playlist"]
 
     with torch.no_grad():
-        anchor_id = request.args.get("anchor")
         number_of_tracks, tracks = get_tracks_from_playlist(
             spotify_client, playlist_id)
 
@@ -74,6 +73,9 @@ def predict():
                           is_anchor=id == anchor_id)
 
             playlist.add_track(track)
+
+        if isinstance(playlist.get_anchor(), type(None)):
+            return abort(Response(400, "Provided Anchor Track does not exist in playlist..."))
 
         algorthm = Algorithm(playlist)
 
