@@ -1,5 +1,8 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 Flask==1.1.2
+Jinja2==3.0.1
+itsdangerous==2.0.1
+Werkzeug==2.0.1
 numpy
 requests
 pydub==0.25.1
