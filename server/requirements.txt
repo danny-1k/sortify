@@ -1,7 +1,7 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 Flask==1.1.2
-numpy==1.21.6
-requests==2.28.2
+numpy
+requests
 pydub==0.25.1
 spotipy==2.22.1
 torch==1.9.0
