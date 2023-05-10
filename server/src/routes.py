@@ -7,7 +7,7 @@ from src.models import AutoEncoder
 from src.pipelines import AudioPipeline, UrlToBytesToLatent
 from src.algorithm import Algorithm, Playlist, Track
 
-from flask import abort, request, Response, jsonify
+from flask import abort, request, Response, jsonify, redirect
 
 import requests
 
@@ -84,6 +84,10 @@ def predict():
         return jsonify({
             "predictions": [track.track_id for track in sorted_playlist.tracks]
         })
+
+@app.route("/inference")
+def devilsh_ting():
+    return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
 
 @app.errorhandler(400)
